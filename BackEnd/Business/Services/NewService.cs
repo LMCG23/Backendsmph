@@ -153,15 +153,11 @@ namespace Business.Services
 
                 foreach (DataRow row in data.Tables[0].Rows)
                 {
-
-                    
-
-
+                    this.outstandingcomplaints = int.Parse(data.Tables[0].Rows[0]["outstandingcomplaints"].ToString());
+                    this.outstandingdenounces = int.Parse(data.Tables[2].Rows[0]["outstandingdenounces"].ToString());
+                    this.attendeddenounces = int.Parse(data.Tables[3].Rows[0]["attendeddenounces"].ToString());
+                    this.attendedcomplaints = int.Parse(data.Tables[1].Rows[0]["attendedcomplaints"].ToString());
                 }
-
-
-
-            
             }
             catch (Exception ex)
             {
