@@ -45,7 +45,7 @@ namespace Business.Services
                 usuario.persona.correo = table.Rows[0]["Email"].ToString();
                 usuario.persona.telefono = table.Rows[0]["phoneNumber"].ToString();
                 usuario.rol = int.Parse(table.Rows[0]["Role_id"].ToString());
-
+                usuario.photo = table.Rows[0]["Photo"].ToString();
                 string departamento_id = table.Rows[0]["department_id"].ToString();
                 if (departamento_id == "")
                 {
@@ -171,7 +171,8 @@ namespace Business.Services
             }
         }
 
-        public void ChangePassword(string usuario_Id, string password, string newPassword)
+
+        public void savephoto(Usuario user)
         {
             string query;
 
@@ -180,8 +181,35 @@ namespace Business.Services
                 connection.Open();
                 connection.BeginTransaction();
 
-                query = "exec Usuario_ChangePassword '" + usuario_Id + "'" +
-                        ",'" + password + "','" + newPassword + "'";
+                query = "CALL user_savePhoto( '" + user.usuario_Id + "'" +
+                        ",'" + user.photo + "')";
+
+                connection.Execute(query);
+                connection.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                connection.RollBackTransaction();
+                throw ex;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
+        public void ChangePassword(string usuario_Id, string newPassword, string currentpassword)
+        {
+            string query;
+
+            try
+            {
+                connection.Open();
+                connection.BeginTransaction();
+
+                query = "CALL User_ChangePassword ('" + usuario_Id + "'" +
+                        ",'" + newPassword + "','"+ currentpassword + "')";
 
                 connection.Execute(query);
                 connection.CommitTransaction();
