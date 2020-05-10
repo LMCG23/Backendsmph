@@ -85,8 +85,8 @@ namespace ControlClaro.Controllers
         }
 
         [HttpPost]
-        [Route("api/usuario/change-password/{newPassword}")]
-        public HttpResponseMessage ChangePassword([FromBody] Usuario usuario, string newPassword)
+        [Route("api/usuario/change-password/{newPassword}/{currentpassword}")]
+        public HttpResponseMessage ChangePassword(string newPassword,string currentpassword)
         {
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
             ResponseConfig config = VerifyAuthorization(Request.Headers);
@@ -98,7 +98,7 @@ namespace ControlClaro.Controllers
 
                 using (UsuarioService service = new UsuarioService())
                 {
-                    service.ChangePassword(usuario.usuario_Id, usuario.password, newPassword);
+                    service.ChangePassword(config.usuario.usuario_Id, newPassword, currentpassword);
                     data.result = null;
                     data.status = true;
                     data.message = "El cambio de contraseña se completó correctamente";
@@ -118,6 +118,46 @@ namespace ControlClaro.Controllers
 
             return response;
         }
+
+
+        [HttpPost]
+        [Route("api/user/savephoto/")]
+        public HttpResponseMessage savePhoto([FromBody] Usuario user)
+        {
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            ResponseConfig config = VerifyAuthorization(Request.Headers);
+            RestResponse data = new RestResponse();
+
+            try
+            {
+                VerifyMessage(config.errorMessage);
+
+                using (UsuarioService service = new UsuarioService())
+                {
+                    service.savephoto(user);
+                    data.result = null;
+                    data.status = true;
+                    data.message = "El cambio de foto se completó correctamente";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                data.status = false;
+                data.message = ex.Message;
+                data.error = NewError(ex, "Cambio de foto");
+            }
+            finally
+            {
+                response.Content = CreateContent(data);
+            }
+
+            return response;
+        }
+
+
+
+
 
 
         [HttpGet]

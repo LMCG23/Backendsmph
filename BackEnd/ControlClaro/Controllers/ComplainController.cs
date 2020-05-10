@@ -27,6 +27,8 @@ namespace ControlClaro.Controllers
 
                 using (ComplainService service = new ComplainService())
                 {
+
+                    
                     var departamentos = service.TodosDespartamentos();
                     data.result = new { departamentos };
                     data.status = true;
@@ -101,6 +103,7 @@ namespace ControlClaro.Controllers
 
             return response;
         }
+
 
 
 

@@ -7,6 +7,7 @@
         public string nombre { get; set; }
         public int rol { get; set; }
         public string password { get; set; }
+        public string photo { get; set; }
         public Persona persona { get; set; }
         public Department departamento { get; set; }
         #endregion
@@ -18,6 +19,7 @@
             this.password = string.Empty;
             this.persona = new Persona();
             this.departamento = new Department();
+            this.photo = string.Empty;
         }
         #endregion
     }
