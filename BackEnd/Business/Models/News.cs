@@ -14,6 +14,7 @@ namespace Business.Models
         public string titulo { get; set; }
         public string descripcion { get; set; }      
         public string fileToUpload { get; set; }
+        public string expired { get; set; }
 
         #endregion
         #region Definition of Constructors
@@ -23,6 +24,7 @@ namespace Business.Models
             this.titulo = string.Empty;
             this.descripcion = string.Empty;
             this.fileToUpload = string.Empty;
+            this.expired = string.Empty;
         }
         #endregion
     }

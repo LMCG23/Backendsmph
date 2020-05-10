@@ -47,6 +47,60 @@ namespace ControlClaro.Controllers
             return response;
         }
 
+        [HttpGet]
+        [Route("api/complaints/list/{desde}/{hasta}/{state}/{department}")]
+        public HttpResponseMessage complaintsFilter(string desde,string hasta,string state,string department)
+        {
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            ResponseConfig config = VerifyAuthorization(Request.Headers);
+            RestResponse data = new RestResponse();
+
+            try
+            {
+                VerifyMessage(config.errorMessage);
+
+                if (desde == "_ALL_")
+                {
+                    desde = "";
+    }
+
+                if (hasta == "_ALL_")
+                {
+                    hasta = "";
+                }
+
+                if (state == "_ALL_")
+                {
+                    state = "";
+                }
+
+                if (department == "_ALL_")
+                {
+                    department = "";
+                }
+
+
+                using (ComplainService service = new ComplainService())
+                {
+                    var complaints = service.complaintsFilter(desde, hasta, state, department,config.usuario.usuario_Id);
+                    data.result = new { complaints };
+                    data.status = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                data.status = false;
+                data.message = ex.Message;
+                data.error = NewError(ex, "Lista de quejas");
+            }
+            finally
+            {
+                response.Content = CreateContent(data);
+            }
+
+            return response;
+        }
 
 
 
