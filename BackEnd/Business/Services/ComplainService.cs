@@ -63,7 +63,57 @@ namespace Business.Services
                 connection.Close();
             }
         }
-       
+
+
+        public List<Complain> complaintsFilter(string desde,string hasta,string state,string department, string usuario_Id)
+        {
+            List<Complain> complains = new List<Complain>();
+            DataSet data;
+            string query;
+
+            try
+            {
+                connection.Open();
+
+                query = "CALL Complain_listfilter ('" + desde + "','" + hasta + "','" + state.Trim() + "','" + department.Trim() + "','" + usuario_Id.Trim()  + "')";
+
+                data = connection.SelectData(query);
+
+                if (data == null || data.Tables.Count == 0)
+                    VerifyMessage("Ocurrió un error durante la transacción por favor inténtelo de nuevo");
+
+                foreach (DataRow row in data.Tables[0].Rows)
+                {
+                    complains.Add(new Complain()
+                    {
+                        Complain_Id = int.Parse(row["Complain_id"].ToString()),
+                        Description = row["Description"].ToString(),
+                        state = row["state"].ToString(),
+                        person_Id = int.Parse(row["Person_Id"].ToString()),
+                        employee = row["employee"].ToString(),
+                        employee_name = row["employee_name"].ToString(),
+                        department_id = int.Parse(row["Department_Id"].ToString()),
+                        User_id = int.Parse(row["User_id"].ToString()),
+                        fecha = row["fecha"].ToString(),
+                        departmentname = row["DepartmentName"].ToString()
+
+                    });
+                }
+
+
+                return complains;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
 
 
 

@@ -30,7 +30,7 @@ namespace ControlClaro.Controllers
 
                 using (NewService service = new NewService())
                 {
-                    service.NewInsert(Noticia.new_id,Noticia.descripcion, Noticia.fileToUpload, Noticia.titulo);
+                    service.NewInsert(Noticia.new_id,Noticia.descripcion, Noticia.fileToUpload, Noticia.titulo,Noticia.expired);
                     data.result = null;
                     data.status = true;
                     data.message = Noticia.new_id == 0 ? "Se creo la noticia":"Se actualizó corretamenta la noticia";
@@ -87,6 +87,50 @@ namespace ControlClaro.Controllers
 
             return response;
         }
+
+
+        [HttpGet]
+        [Route("api/News/getnewsfilter/{expired}/{filter}")]
+        public HttpResponseMessage getNewsFilter(string expired,string filter)
+        {
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            ResponseConfig config = VerifyAuthorization(Request.Headers);
+            RestResponse data = new RestResponse();
+
+            try
+            {
+
+
+                VerifyMessage(config.errorMessage);
+
+                if (expired == "_ALL_") expired = "";
+
+                if (filter == "_ALL_") filter = "";
+
+
+                using (NewService service = new NewService())
+                {
+                    var Noticias = service.GETNEWSFILTER(expired,filter);
+                    data.result = new { Noticias };
+                    data.status = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                data.status = false;
+                data.message = ex.Message;
+                data.error = NewError(ex, "Lista de Noticias");
+            }
+            finally
+            {
+                response.Content = CreateContent(data);
+            }
+
+            return response;
+        }
+
+
 
 
         [HttpDelete]
