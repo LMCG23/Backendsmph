@@ -160,6 +160,80 @@ namespace ControlClaro.Controllers
 
 
 
+
+
+        [HttpGet]
+        [Route("api/Denuncias/ListDenouncesbyDepartment/{Department_id}")]
+        public HttpResponseMessage ListDenouncesbyDepartment(int Department_id)
+        {
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            ResponseConfig config = VerifyAuthorization(Request.Headers);
+            RestResponse data = new RestResponse();
+
+            try
+            {
+                VerifyMessage(config.errorMessage);
+
+
+
+                using (DenounceService service = new DenounceService())
+                {
+
+                    data.result = service.ListDenouncesbyDepartment(Department_id);
+                    data.status = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                data.status = false;
+                data.message = ex.Message;
+                data.error = NewError(ex, "Lista de Denuncias por Departamento");
+            }
+            finally
+            {
+                response.Content = CreateContent(data);
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [Route("api/Denounce/UpdateDenouncebyAdmin/{Denuncia}")]
+        public HttpResponseMessage UpdateDenouncebyAdmin(Denounce Denuncia)
+        {
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            ResponseConfig config = VerifyAuthorization(Request.Headers);
+            RestResponse data = new RestResponse();
+
+            try
+            {
+                VerifyMessage(config.errorMessage);
+
+                using (DenounceService service = new DenounceService())
+                {
+                    service.UpdateDenouncebyAdmin(Denuncia.Denounces_id, Denuncia.state, Denuncia.Department_Id, Denuncia.Answer);
+                    data.result = null;
+                    data.status = true;
+                    data.message = Denuncia.Denounces_id == 0 ? "Se creó la Denuncia" : "Se actualizó la Denuncia";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                data.status = false;
+                data.message = ex.Message;
+                data.error = NewError(ex, "hubo un error");
+            }
+            finally
+            {
+                response.Content = CreateContent(data);
+            }
+
+            return response;
+        }
+
+
     }
 
 

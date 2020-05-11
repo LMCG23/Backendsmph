@@ -130,6 +130,62 @@ namespace Business.Services
 
 
 
+        public List<Denounce> ListDenouncesbyDepartment(int Department_id)
+        {
+            List<Denounce> complains = new List<Denounce>();
+            DataSet data;
+            string query;
+
+            try
+            {
+                connection.Open();
+
+                query = "CALL ListDenouncesbyDepartment ('" + Department_id + "')";
+
+                data = connection.SelectData(query);
+
+                if (data == null || data.Tables.Count == 0)
+                    VerifyMessage("Ocurrió un error durante la transacción por favor inténtelo de nuevo");
+
+                foreach (DataRow row in data.Tables[0].Rows)
+                {
+                    complains.Add(new Denounce()
+                    {
+                        Denounces_id = int.Parse(row["Denounces_id"].ToString()),
+                        Description = row["Description"].ToString(),
+                        Department_Id = int.Parse(row["Department_Id"].ToString()),
+                        state = row["State"].ToString(),
+                        Photo = row["Photo"].ToString(),
+                        Longitud = row["Longitud"].ToString(),
+                        Latitud = row["Latitud"].ToString(),
+                        PersonName= row["Name"].ToString(),
+                        Answer= row["Answer"].ToString(),
+                        person_Id= int.Parse(row["Person_id"].ToString()),
+                        Email= row["Email"].ToString(),
+                        phoneNumber= int.Parse(row["phoneNumber"].ToString()),
+                        fecha =row["Date"].ToString()
+
+                    });
+                }
+
+
+
+                return complains;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
+
+
+
         #region Implements Interface IDisposable
         public void Dispose()
         {
@@ -150,6 +206,33 @@ namespace Business.Services
                 connection.BeginTransaction();
 
                 query = "CALL DeleteDenounce" + "('" + Denounce_id + "'" + ")";
+
+                connection.Execute(query);
+                connection.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                connection.RollBackTransaction();
+                throw ex;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+              public void UpdateDenouncebyAdmin(int Denounces_id, string State, int Department_id, string Answer)
+        {
+            string query;
+
+            try
+            {
+                connection.Open();
+                connection.BeginTransaction();
+
+
+
+                query = "CALL UpdateDenouncebyAdmin(" + Denounces_id + ",'" + State + "'" + ",'" + Department_id + "'" + ",'" + Answer+ "')";
 
                 connection.Execute(query);
                 connection.CommitTransaction();
