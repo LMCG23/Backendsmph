@@ -18,6 +18,12 @@ namespace Business.Models
         public int Department_Id { get; set; }
         public string DepartmentName { get; set; }
         public string Photo { get; set; }
+        public string fecha { get; set; }
+        public string Answer { get; set; }
+        public string PersonName { get; set; }
+        public string Email { get; set; }
+        public int phoneNumber { get; set; }
+
 
         public string Latitud { get; set; }
         public string Longitud { get; set; }
