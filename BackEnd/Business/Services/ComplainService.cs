@@ -385,7 +385,81 @@ namespace Business.Services
             }
         }
 
+        public List<Complain> AllComplains()
+        {
+            List<Complain> complains = new List<Complain>();
+            DataSet data;
+            string query;
 
+            try
+            {
+                connection.Open();
+
+                query = "CALL AllComplains()";
+                data = connection.SelectData(query);
+
+                if (data == null || data.Tables.Count == 0)
+                    VerifyMessage("Ocurrió un error durante la transacción por favor inténtelo de nuevo");
+
+                foreach (DataRow row in data.Tables[0].Rows)
+                {
+                    complains.Add(new Complain()
+                    {
+
+
+                        Complain_Id = int.Parse(row["Complain_id"].ToString()),
+                        Description = row["Description"].ToString(),
+                        state = row["state"].ToString(),
+                        person_Id = int.Parse(row["Person_Id"].ToString()),
+                        employee = row["employee"].ToString(),
+                        employee_name = row["employee_name"].ToString(),
+                        fecha = row["fecha"].ToString(),
+                        departmentname = row["DepartmentName"].ToString(),
+                        Answer = row["Answer"].ToString()
+                    });
+                }
+
+
+
+                return complains;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
+        public void UpdateComplainbyAdmin(int Complain_id, string State,string Answer)
+        {
+            string query;
+
+            try
+            {
+                connection.Open();
+                connection.BeginTransaction();
+
+
+
+                query = "CALL UpdateComplainbyAdmin('" + Complain_id + "'" + ",'" + State + "'" + ",'" + Answer+ "')";
+
+                connection.Execute(query);
+                connection.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                connection.RollBackTransaction();
+                throw ex;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
 
 
 

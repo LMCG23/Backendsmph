@@ -290,6 +290,77 @@ namespace ControlClaro.Controllers
 
 
 
+        [HttpGet]
+        [Route("api/Complain/AllComplains")]
+        public HttpResponseMessage AllComplains()
+        {
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            ResponseConfig config = VerifyAuthorization(Request.Headers);
+            RestResponse data = new RestResponse();
+
+            try
+            {
+                VerifyMessage(config.errorMessage);
+
+
+
+                using (ComplainService service = new ComplainService())
+                {
+                    var complains = service.AllComplains();
+                    data.result = new { complains };
+                    data.status = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                data.status = false;
+                data.message = ex.Message;
+                data.error = NewError(ex, "Lista de Quejas");
+            }
+            finally
+            {
+                response.Content = CreateContent(data);
+            }
+
+            return response;
+        }
+
+
+        [HttpPost]
+        [Route("api/complain/UpdateComplainbyAdmin/{complain}")]
+        public HttpResponseMessage UpdateComplainbyAdmin(Complain complain)
+        {
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            ResponseConfig config = VerifyAuthorization(Request.Headers);
+            RestResponse data = new RestResponse();
+
+            try
+            {
+                VerifyMessage(config.errorMessage);
+
+                using (ComplainService service = new ComplainService())
+                {
+                    service.UpdateComplainbyAdmin(complain.Complain_Id, complain.state, complain.Answer);
+                    data.result = null;
+                    data.status = true;
+                    data.message = "Se actualizo la queja";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                data.status = false;
+                data.message = ex.Message;
+                data.error = NewError(ex, "hubo un error");
+            }
+            finally
+            {
+                response.Content = CreateContent(data);
+            }
+
+            return response;
+        }
 
     }
 }

@@ -267,7 +267,39 @@ namespace ControlClaro.Controllers
 
             return response;
         }
+        [HttpGet]
+        [Route("api/usuario/PersonbyId/{Person_Id}")]
+        public HttpResponseMessage PersonbyId(int Person_Id)
+        {
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            ResponseConfig config = VerifyAuthorization(Request.Headers);
+            RestResponse data = new RestResponse();
 
+            try
+            {
+                VerifyMessage(config.errorMessage);
+
+                using (UsuarioService service = new UsuarioService())
+                {
+                    var Persona = service.PersonbyId(Person_Id);
+                    data.result = new { Persona };
+                    data.status = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                data.status = false;
+                data.message = ex.Message;
+                data.error = NewError(ex, "Persona Encontrada");
+            }
+            finally
+            {
+                response.Content = CreateContent(data);
+            }
+
+            return response;
+        }
 
 
 

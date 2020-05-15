@@ -18,6 +18,7 @@ namespace Business.Models
         public int department_id { get; set; }
         public string departmentname { get; set; }
         public string fecha { get; set; }
+        public string Answer { get; set; }
 
         public string employee_name { get; set; }
         #endregion
