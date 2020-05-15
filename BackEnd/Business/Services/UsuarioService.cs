@@ -341,6 +341,47 @@ namespace Business.Services
         }
 
 
+        public Persona PersonbyId(int Person_Id)
+        {
+            Persona persona = new Persona();
+            DataTable table;
+            string query;
+
+            try
+            {
+                connection.Open();
+
+                query = "CALL PersonbyId("+Person_Id+")";
+
+                table = connection.Select(query);
+
+                if (table == null || table.Rows.Count == 0)
+                    VerifyMessage("Ocurrió un error durante la transacción por favor inténtelo de nuevo");
+
+
+                persona.nombre = table.Rows[0]["Name"].ToString();
+                persona.apellido1 = table.Rows[0]["LastName1"].ToString();
+                persona.apellido2 = table.Rows[0]["LastName2"].ToString();
+                persona.correo = table.Rows[0]["Email"].ToString();
+                persona.telefono = table.Rows[0]["phoneNumber"].ToString();
+   
+
+
+                return persona;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
+
+
 
 
 
