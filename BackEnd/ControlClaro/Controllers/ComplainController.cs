@@ -198,7 +198,7 @@ namespace ControlClaro.Controllers
                 using (ComplainService service = new ComplainService())
                 {
                     var complains = service.ListComplainsbyId(Id_User);
-                    data.result = new { complains }; 
+                    data.result = new { complains}; 
                     data.status = true;
                 }
             }
@@ -218,8 +218,8 @@ namespace ControlClaro.Controllers
         }
 
         [HttpPost]
-        [Route("api/complain/Update/{complain}")]
-        public HttpResponseMessage UpdateComplain(Complain complain)
+        [Route("api/complain/Update/")]
+        public HttpResponseMessage UpdateComplain([FromBody] Complain complain)
         {
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
             ResponseConfig config = VerifyAuthorization(Request.Headers);
@@ -291,8 +291,8 @@ namespace ControlClaro.Controllers
 
 
         [HttpGet]
-        [Route("api/Complain/AllComplains")]
-        public HttpResponseMessage AllComplains()
+        [Route("api/Complain/AllComplains/{state}/{from}/{to}")]
+        public HttpResponseMessage AllComplains(string state,string from,string to)
         {
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
             ResponseConfig config = VerifyAuthorization(Request.Headers);
@@ -302,12 +302,27 @@ namespace ControlClaro.Controllers
             {
                 VerifyMessage(config.errorMessage);
 
+                if (from == "_ALL_")
+                {
+                    from = "";
+                }
+
+                if (to == "_ALL_")
+                {
+                    to = "";
+                }
+
+
+                if (state == "-1")
+                {
+                    state = "";
+                }
 
 
                 using (ComplainService service = new ComplainService())
                 {
-                    var complains = service.AllComplains();
-                    data.result = new { complains };
+                    var complains = service.AllComplains(state,to,from);
+                    data.result = new { complains, service.attendedcomplaints, service.newcomplaints, service.complaintsinprocess };
                     data.status = true;
                 }
             }

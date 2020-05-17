@@ -22,7 +22,7 @@ namespace Business.Services
 
         }
 
-        public void NewInsert(int new_id,String descripcion, string fileToUpload, string titulo,string expired)
+        public void NewInsert(int new_id,String descripcion, string fileToUpload, string titulo,string expired,bool active)
         {
             string query;
 
@@ -36,7 +36,7 @@ namespace Business.Services
 
 
                 query = "CALL NewInsert("+ new_id + ",'" + descripcion + "'" +
-                        ",'" + fileToUpload + "','" + titulo + "','"+ expired.ToString() +"')";
+                        ",'" + fileToUpload + "','" + titulo + "','"+ expired.ToString() + "'," + active.ToString() +"   )";
 
                 connection.Execute(query);
                 connection.CommitTransaction();
@@ -81,6 +81,7 @@ namespace Business.Services
                  string descripcion = row["descri"].ToString();
                     string Photo = (row["photo"]).ToString();
                     int noticia_id = int.Parse(row["News_Id"].ToString());
+
                     //  var bitesPhoto = (row["photo"]);
                     //  string Photo = Convert.ToBase64String((byte[])bitesPhoto);
                     noticia.new_id = noticia_id;
@@ -88,6 +89,11 @@ namespace Business.Services
                     noticia.descripcion = descripcion;
                     noticia.fileToUpload = Photo;
                     noticia.expired = row["Date"].ToString();
+                    int active = int.Parse(row["Active"].ToString());
+
+                    noticia.Active = active == 1 ? true : false;
+           
+
                     noticias.Add(noticia); 
 
 
@@ -141,6 +147,9 @@ namespace Business.Services
                     noticia.descripcion = descripcion;
                     noticia.fileToUpload = Photo;
                     noticia.expired = row["Date"].ToString();
+                    int active = int.Parse(row["Active"].ToString());
+                    
+                    noticia.Active = active==1 ? true : false;
                     noticias.Add(noticia);
 
 

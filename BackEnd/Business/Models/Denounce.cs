@@ -21,8 +21,12 @@ namespace Business.Models
         public string fecha { get; set; }
         public string Answer { get; set; }
         public string PersonName { get; set; }
+        public string PersonLastName1 { get; set; }
+        public string PersonLastName2 { get; set; }
         public string Email { get; set; }
         public int phoneNumber { get; set; }
+
+
 
 
         public string Latitud { get; set; }

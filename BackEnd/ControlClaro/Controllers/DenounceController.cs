@@ -163,8 +163,8 @@ namespace ControlClaro.Controllers
 
 
         [HttpGet]
-        [Route("api/Denuncias/ListDenouncesbyDepartment/{Department_id}")]
-        public HttpResponseMessage ListDenouncesbyDepartment(int Department_id)
+        [Route("api/Denuncias/ListDenouncesbyDepartment/{Department_id}/{state}/{from}/{to}")]
+        public HttpResponseMessage ListDenouncesbyDepartment(int Department_id,string state,string from,string to)
         {
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
             ResponseConfig config = VerifyAuthorization(Request.Headers);
@@ -174,12 +174,25 @@ namespace ControlClaro.Controllers
             {
                 VerifyMessage(config.errorMessage);
 
+                if (from == "_ALL_") {
+                    from = "";
+                }
 
+                if (to == "_ALL_")
+                {
+                    to = "";
+                }
+
+
+                if (state == "-1")
+                {
+                    state = "";
+                }
 
                 using (DenounceService service = new DenounceService())
                 {
-
-                    data.result = service.ListDenouncesbyDepartment(Department_id);
+                    var Denounces = service.ListDenouncesbyDepartment(Department_id, state, from, to);
+                    data.result = new { Denounces, service.newdenounces, service.denouncesinprocess, service.attendeddenounces };
                     data.status = true;
                 }
             }
@@ -199,8 +212,8 @@ namespace ControlClaro.Controllers
         }
 
         [HttpPost]
-        [Route("api/Denounce/UpdateDenouncebyAdmin/{Denuncia}")]
-        public HttpResponseMessage UpdateDenouncebyAdmin(Denounce Denuncia)
+        [Route("api/Denounce/UpdateDenouncebyAdmin/{act}")]
+        public HttpResponseMessage UpdateDenouncebyAdmin([FromBody] Denounce Denuncia, string act)
         {
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
             ResponseConfig config = VerifyAuthorization(Request.Headers);
@@ -212,10 +225,10 @@ namespace ControlClaro.Controllers
 
                 using (DenounceService service = new DenounceService())
                 {
-                    service.UpdateDenouncebyAdmin(Denuncia.Denounces_id, Denuncia.state, Denuncia.Department_Id, Denuncia.Answer);
+                    service.UpdateDenouncebyAdmin(Denuncia.Denounces_id, Denuncia.state, Denuncia.Department_Id, Denuncia.Answer,act);
                     data.result = null;
                     data.status = true;
-                    data.message = Denuncia.Denounces_id == 0 ? "Se creó la Denuncia" : "Se actualizó la Denuncia";
+                    data.message = act == "R" ? "Se direccionó la denuncia Correctamente" : "Se le ha dado una respuesta a la denuncia correctamente";
                 }
             }
             catch (Exception ex)

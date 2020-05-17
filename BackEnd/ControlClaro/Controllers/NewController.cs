@@ -30,7 +30,7 @@ namespace ControlClaro.Controllers
 
                 using (NewService service = new NewService())
                 {
-                    service.NewInsert(Noticia.new_id,Noticia.descripcion, Noticia.fileToUpload, Noticia.titulo,Noticia.expired);
+                    service.NewInsert(Noticia.new_id,Noticia.descripcion, Noticia.fileToUpload, Noticia.titulo,Noticia.expired,Noticia.Active);
                     data.result = null;
                     data.status = true;
                     data.message = Noticia.new_id == 0 ? "Se creo la noticia":"Se actualizó corretamenta la noticia";
