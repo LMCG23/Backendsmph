@@ -11,6 +11,12 @@ namespace Business.Services
     {
 
         #region Definition of Properties
+
+    
+
+        public int newcomplaints { get; set; }
+        public int complaintsinprocess { get; set; }
+        public int attendedcomplaints { get; set; }
         public long cantidad { get; set; }
         #endregion
         #region Definition of Constructors
@@ -385,7 +391,7 @@ namespace Business.Services
             }
         }
 
-        public List<Complain> AllComplains()
+        public List<Complain> AllComplains(string state, string to, string from)
         {
             List<Complain> complains = new List<Complain>();
             DataSet data;
@@ -395,7 +401,7 @@ namespace Business.Services
             {
                 connection.Open();
 
-                query = "CALL AllComplains()";
+                query = "CALL AllComplains ( '"+ state + "','" + to + "','" + from +"' )";
                 data = connection.SelectData(query);
 
                 if (data == null || data.Tables.Count == 0)
@@ -405,8 +411,6 @@ namespace Business.Services
                 {
                     complains.Add(new Complain()
                     {
-
-
                         Complain_Id = int.Parse(row["Complain_id"].ToString()),
                         Description = row["Description"].ToString(),
                         state = row["state"].ToString(),
@@ -419,6 +423,10 @@ namespace Business.Services
                     });
                 }
 
+
+                this.newcomplaints = int.Parse(data.Tables[1].Rows[0]["newcomplaints"].ToString());
+                this.attendedcomplaints = int.Parse(data.Tables[2].Rows[0]["attendedcomplaints"].ToString());
+                this.complaintsinprocess = int.Parse(data.Tables[3].Rows[0]["complaintsinprocess"].ToString());
 
 
                 return complains;

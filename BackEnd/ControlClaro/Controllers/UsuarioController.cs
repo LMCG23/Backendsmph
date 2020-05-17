@@ -198,8 +198,8 @@ namespace ControlClaro.Controllers
 
 
         [HttpGet]
-        [Route("api/usuario/admi")]
-        public HttpResponseMessage ListallUsers()
+        [Route("api/usuario/admi/{filter}")]
+        public HttpResponseMessage ListallUsers(string filter)
         {
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
             ResponseConfig config = VerifyAuthorization(Request.Headers);
@@ -209,9 +209,13 @@ namespace ControlClaro.Controllers
             {
                 VerifyMessage(config.errorMessage);
 
+                if (filter == "_ALL_")
+                {
+                    filter = "";
+                }
                 using (UsuarioService service = new UsuarioService())
                 {
-                    var users = service.UsersWithAll();
+                    var users = service.UsersWithAll(filter);
                     data.result = new { users };
                     data.status = true;
                 }
@@ -301,6 +305,40 @@ namespace ControlClaro.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("api/usuario/save")]
+        public HttpResponseMessage Guardar([FromBody] Usuario usuario)
+        {
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            ResponseConfig config = VerifyAuthorization(Request.Headers);
+            RestResponse data = new RestResponse();
+
+
+            try
+            {
+                VerifyMessage(config.errorMessage);
+                using (UsuarioService service = new UsuarioService())
+                {
+                    service.save(usuario);
+                    data.result = null;
+                    data.status = true;
+                    data.message = usuario.usuario_Id == "-1" ? " Se creó correctamente el funcionario " :" Se actualizó correctamente el funcionario" ;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                data.status = false;
+                data.message = ex.Message;
+                data.error = NewError(ex, "Registro");
+            }
+            finally
+            {
+                response.Content = CreateContent(data);
+            }
+
+            return response;
+        }
 
 
 

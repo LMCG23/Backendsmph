@@ -146,6 +146,38 @@ namespace Business.Services
             }
         }
 
+
+        public void save(Usuario user)
+        {
+            string query;
+
+            try
+            {
+                connection.Open();
+                connection.BeginTransaction();
+
+                query = "CALL saveFuncionary (" + user.usuario_Id +  "," + user.persona.persona_Id.ToString() + ",'" + user.persona.nombre.Trim() + "','" +
+                     user.persona.apellido1.Trim() + "','" + user.persona.apellido2.Trim() + "','" + user.persona.correo.Trim() +
+                     "','" + user.persona.telefono.Trim() + "'," + user.usuario_Id.ToString() + ",'" + user.nombre.Trim() + "','" +
+                      user.password.Trim() + "'," + user.rol.ToString() + "," + user.departamento.department_Id + ")";
+
+
+                connection.Execute(query);
+                connection.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                connection.RollBackTransaction();
+                throw ex;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
+
+
         public void Eliminar(string usuario_Id)
         {
             string query;
@@ -267,7 +299,7 @@ namespace Business.Services
         }
 
 
-        public List<Usuario> UsersWithAll()
+        public List<Usuario> UsersWithAll(string filter)
         {
             List<Usuario> usuarios = new List<Usuario>();
             Usuario usuario = new Usuario();
@@ -278,7 +310,7 @@ namespace Business.Services
             {
                 connection.Open();
 
-                query = "CALL UsersWithAll()";
+                query = "CALL UsersWithAll( '"+ filter + "' )";
 
                 data = connection.SelectData(query);
 
@@ -293,10 +325,12 @@ namespace Business.Services
                     usuario.persona.persona_Id = int.Parse(row["Person_id"].ToString());
                     usuario.persona.nombre = row["Name"].ToString();
                     usuario.persona.apellido1 = row["LastName1"].ToString();
-                    usuario.persona.apellido1 = row["LastName2"].ToString();
+                    usuario.persona.apellido2 = row["LastName2"].ToString();
                     usuario.persona.correo = row["Email"].ToString();
                     usuario.persona.telefono = row["phoneNumber"].ToString();
                     usuario.departamento.name = row["DepartmentName"].ToString();
+                    usuario.rol = int.Parse(row["Role_id"].ToString());
+                    usuario.departamento.department_Id = int.Parse(row["department_id"].ToString());
                     usuarios.Add(usuario);
                 }
 

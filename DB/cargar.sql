@@ -16,8 +16,8 @@ INSERT INTO `smartmsph`.`department` (`Department_Id`, `DepartmentName`, `Person
 
 
 delete from user where user_id in (1,2,3);
-insert into user values (1,'lcastro','123456',116740597,1,1);
-insert into user values (2,'aoviedo','123456',374993233,1,2);
-insert into user values (3,'jrichmond','123456',231232123,1,1);
+insert into user values (1,'lcastro','e10adc3949ba59abbe56e057f20f883e',116740597,1,1,NULL);
+insert into user values (2,'aoviedo','e10adc3949ba59abbe56e057f20f883e',374993233,1,2,NULL);
+insert into user values (3,'jrichmond','e10adc3949ba59abbe56e057f20f883e',231232123,1,1,NULL);
 
 

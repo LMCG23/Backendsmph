@@ -8,12 +8,12 @@ using static Business.Utilities.Functions;
 
 namespace ControlClaro.Controllers
 {
-    public class DepartmentController:ApiController
+    public class DepartmentController : ApiController
     {
 
         [HttpGet]
         [Route("api/Funcionario/allfuncionary/")]
-        public HttpResponseMessage ListaFuncionarios( )
+        public HttpResponseMessage ListaFuncionarios()
         {
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
             ResponseConfig config = VerifyAuthorization(Request.Headers);
@@ -94,6 +94,8 @@ namespace ControlClaro.Controllers
 
             try
             {
+               
+                
                 VerifyMessage(config.errorMessage);
 
                 using (DepartmentService service = new DepartmentService())
@@ -120,12 +122,53 @@ namespace ControlClaro.Controllers
         }
 
 
+   
+
+            [HttpGet]
+            [Route("api/department/list/{filter}")]
+            public HttpResponseMessage DepartmentList(string filter)
+            {
+                HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+                ResponseConfig config = VerifyAuthorization(Request.Headers);
+                RestResponse data = new RestResponse();
+
+                try
+                {
+                    VerifyMessage(config.errorMessage);
+
+                    if (filter == "_ALL_")
+                    {
+                        filter = "";
+                    }
+
+                    using (DepartmentService service = new DepartmentService())
+                    {
+
+
+                        var departamentos = service.DepartmentList(filter);
+                        data.result = new { departamentos };
+                        data.status = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                    data.status = false;
+                    data.message = ex.Message;
+                    data.error = NewError(ex, "Lista de Departamentos");
+                }
+                finally
+                {
+                    response.Content = CreateContent(data);
+                }
+
+                return response;
+            }
 
 
 
 
 
 
-
+        }
     }
-}

@@ -7,11 +7,18 @@ using static Business.Utilities.Functions;
 
 namespace Business.Services
 {
-  public class DenounceService : BaseService, IDisposable
+    public class DenounceService : BaseService, IDisposable
     {
+
+
+        public int newdenounces {get;set;}
+        public int attendeddenounces { get; set; }
+        public int denouncesinprocess { get; set; }
         public DenounceService() : base()
         {
-
+            this.newdenounces = 0;
+            this.attendeddenounces = 0;
+            this.denouncesinprocess = 0;
         }
  
         public Ticket obtainticket(int Department_id, string Ticketcol)
@@ -106,10 +113,12 @@ namespace Business.Services
                         Longitud = row["Longitud"].ToString(),
                         Latitud = row["Latitud"].ToString(),
                         DepartmentName = row["DepartmentName"].ToString()
-
-
-
                     }) ;
+
+                 
+
+
+
                 }
 
                
@@ -130,7 +139,7 @@ namespace Business.Services
 
 
 
-        public List<Denounce> ListDenouncesbyDepartment(int Department_id)
+        public List<Denounce> ListDenouncesbyDepartment(int Department_id,string state,string from ,string to)
         {
             List<Denounce> complains = new List<Denounce>();
             DataSet data;
@@ -140,7 +149,7 @@ namespace Business.Services
             {
                 connection.Open();
 
-                query = "CALL ListDenouncesbyDepartment ('" + Department_id + "')";
+                query = "CALL ListDenouncesbyDepartment (" + Department_id.ToString() + ",'" + state.Trim() +"','" + from + "','" + to + "'  )";
 
                 data = connection.SelectData(query);
 
@@ -159,7 +168,9 @@ namespace Business.Services
                         Longitud = row["Longitud"].ToString(),
                         Latitud = row["Latitud"].ToString(),
                         PersonName= row["Name"].ToString(),
-                        Answer= row["Answer"].ToString(),
+                        PersonLastName1 = row["LastName1"].ToString(),
+                        PersonLastName2 = row["LastName2"].ToString(),
+                        Answer = row["Answer"].ToString(),
                         person_Id= int.Parse(row["Person_id"].ToString()),
                         Email= row["Email"].ToString(),
                         phoneNumber= int.Parse(row["phoneNumber"].ToString()),
@@ -167,6 +178,9 @@ namespace Business.Services
 
                     });
                 }
+                this.newdenounces = int.Parse(data.Tables[1].Rows[0]["newdenounces"].ToString());
+                this.attendeddenounces = int.Parse(data.Tables[2].Rows[0]["attendeddenounces"].ToString());
+                this.denouncesinprocess = int.Parse(data.Tables[3].Rows[0]["denouncesinprocess"].ToString());
 
 
 
@@ -221,7 +235,7 @@ namespace Business.Services
             }
         }
 
-              public void UpdateDenouncebyAdmin(int Denounces_id, string State, int Department_id, string Answer)
+              public void UpdateDenouncebyAdmin(int Denounces_id, string State, int Department_id, string Answer,string act)
         {
             string query;
 
@@ -232,7 +246,7 @@ namespace Business.Services
 
 
 
-                query = "CALL UpdateDenouncebyAdmin(" + Denounces_id + ",'" + State + "'" + ",'" + Department_id + "'" + ",'" + Answer+ "')";
+                query = "CALL UpdateDenouncebyAdmin(" + Denounces_id + ",'" + State + "'" + ",'" + Department_id + "'" + ",'" + Answer+ "','" + act + "' )";
 
                 connection.Execute(query);
                 connection.CommitTransaction();
