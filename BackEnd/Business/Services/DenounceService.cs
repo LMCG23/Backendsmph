@@ -84,7 +84,7 @@ namespace Business.Services
             }
         }
 
-        public List<Denounce> ListDenouncesbyId(string user_Id)
+        public List<Denounce> ListDenouncesbyId(string user_Id,string desde,string hasta, string state,string deparment)
         {
             List<Denounce> complains = new List<Denounce>();
             DataSet data;
@@ -94,7 +94,7 @@ namespace Business.Services
             {
                 connection.Open();
 
-                query = "CALL Denounces_list ('" + user_Id.Trim() + "')";
+                query = "CALL Denounces_list ('" + user_Id.Trim() + "','" + desde + "','" + hasta + "','" + state + "','" + deparment + "')";
 
                 data = connection.SelectData(query);
 
@@ -112,7 +112,9 @@ namespace Business.Services
                         Photo = row["Photo"].ToString(),
                         Longitud = row["Longitud"].ToString(),
                         Latitud = row["Latitud"].ToString(),
-                        DepartmentName = row["DepartmentName"].ToString()
+                        DepartmentName = row["DepartmentName"].ToString(),
+                        Answer = row["Answer"].ToString(),
+
                     }) ;
 
                  

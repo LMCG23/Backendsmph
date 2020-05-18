@@ -101,7 +101,8 @@ namespace Business.Services
                         department_id = int.Parse(row["Department_Id"].ToString()),
                         User_id = int.Parse(row["User_id"].ToString()),
                         fecha = row["fecha"].ToString(),
-                        departmentname = row["DepartmentName"].ToString()
+                        departmentname = row["DepartmentName"].ToString(),
+                        Answer = row["Answer"].ToString(),
 
                     });
                 }

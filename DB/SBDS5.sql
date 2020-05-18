@@ -30,11 +30,10 @@ CREATE TABLE IF NOT EXISTS `smartmsph`.`person` (
   `LastName2` VARCHAR(50) NOT NULL,
   `Email` VARCHAR(50) NULL DEFAULT NULL,
   `phoneNumber` VARCHAR(50) NULL DEFAULT NULL,
-  PRIMARY KEY (`Person_Id`))
+  PRIMARY KEY (`Person_Id`),
+  UNIQUE INDEX `id_UNIQUE` (`Person_Id` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
-CREATE UNIQUE INDEX `id_UNIQUE` ON `smartmsph`.`person` (`Person_Id` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -47,17 +46,11 @@ CREATE TABLE IF NOT EXISTS `smartmsph`.`department` (
   `DepartmentName` VARCHAR(45) NOT NULL,
   `Person_Id` BIGINT NULL DEFAULT NULL,
   PRIMARY KEY (`Department_Id`),
-  CONSTRAINT `fk_Department_Person1`
-    FOREIGN KEY (`Person_Id`)
-    REFERENCES `smartmsph`.`person` (`Person_Id`))
+  UNIQUE INDEX `id_UNIQUE` (`Department_Id` ASC) VISIBLE,
+  UNIQUE INDEX `DepartmentName_UNIQUE` (`DepartmentName` ASC) VISIBLE,
+  INDEX `fk_Department_Person1_idx` (`Person_Id` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
-CREATE UNIQUE INDEX `id_UNIQUE` ON `smartmsph`.`department` (`Department_Id` ASC) VISIBLE;
-
-CREATE UNIQUE INDEX `DepartmentName_UNIQUE` ON `smartmsph`.`department` (`DepartmentName` ASC) VISIBLE;
-
-CREATE INDEX `fk_Department_Person1_idx` ON `smartmsph`.`department` (`Person_Id` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -88,27 +81,13 @@ CREATE TABLE IF NOT EXISTS `smartmsph`.`user` (
   `department_id` SMALLINT NULL DEFAULT NULL,
   `photo` MEDIUMTEXT NULL DEFAULT NULL,
   PRIMARY KEY (`User_Id`),
-  CONSTRAINT `fk_department_user_department`
-    FOREIGN KEY (`department_id`)
-    REFERENCES `smartmsph`.`department` (`Department_Id`),
-  CONSTRAINT `fk_person_user_Person`
-    FOREIGN KEY (`Person_id`)
-    REFERENCES `smartmsph`.`person` (`Person_Id`),
-  CONSTRAINT `fk_User_Role1`
-    FOREIGN KEY (`Role_id`)
-    REFERENCES `smartmsph`.`role` (`Role_id`))
+  UNIQUE INDEX `id_UNIQUE` (`User_Id` ASC) VISIBLE,
+  UNIQUE INDEX `UserName_UNIQUE` (`UserName` ASC) VISIBLE,
+  INDEX `fk_citizen_user_citizen1_idx` (`Person_id` ASC) VISIBLE,
+  INDEX `fk_User_Role1_idx` (`Role_id` ASC) VISIBLE,
+  INDEX `fk_department_user_department_idx` (`department_id` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
-CREATE UNIQUE INDEX `id_UNIQUE` ON `smartmsph`.`user` (`User_Id` ASC) VISIBLE;
-
-CREATE UNIQUE INDEX `UserName_UNIQUE` ON `smartmsph`.`user` (`UserName` ASC) VISIBLE;
-
-CREATE INDEX `fk_citizen_user_citizen1_idx` ON `smartmsph`.`user` (`Person_id` ASC) VISIBLE;
-
-CREATE INDEX `fk_User_Role1_idx` ON `smartmsph`.`user` (`Role_id` ASC) VISIBLE;
-
-CREATE INDEX `fk_department_user_department_idx` ON `smartmsph`.`user` (`department_id` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -129,29 +108,13 @@ CREATE TABLE IF NOT EXISTS `smartmsph`.`complain` (
   `Answer` VARCHAR(10000) NULL DEFAULT NULL,
   `Departmet_idR` SMALLINT NULL DEFAULT NULL,
   PRIMARY KEY (`Complain_id`),
-  CONSTRAINT `fk_complain_department1`
-    FOREIGN KEY (`Department_Id`)
-    REFERENCES `smartmsph`.`department` (`Department_Id`),
-  CONSTRAINT `fk_complain_Person`
-    FOREIGN KEY (`Person_Id`)
-    REFERENCES `smartmsph`.`person` (`Person_Id`),
-  CONSTRAINT `fk_Deparmetr`
-    FOREIGN KEY (`Departmet_idR`)
-    REFERENCES `smartmsph`.`department` (`Department_Id`),
-  CONSTRAINT `fk_User_complain1`
-    FOREIGN KEY (`User_id`)
-    REFERENCES `smartmsph`.`user` (`User_Id`))
+  INDEX `fk_complain_citizen1_idx` (`Person_Id` ASC) VISIBLE,
+  INDEX `fk_complain_department1_idx` (`Department_Id` ASC) VISIBLE,
+  INDEX `fk_User_complain1_idx` (`User_id` ASC) VISIBLE,
+  INDEX `fk_Deparmetr_idx` (`Departmet_idR` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 35
+AUTO_INCREMENT = 40
 DEFAULT CHARACTER SET = utf8;
-
-CREATE INDEX `fk_complain_citizen1_idx` ON `smartmsph`.`complain` (`Person_Id` ASC) VISIBLE;
-
-CREATE INDEX `fk_complain_department1_idx` ON `smartmsph`.`complain` (`Department_Id` ASC) VISIBLE;
-
-CREATE INDEX `fk_User_complain1_idx` ON `smartmsph`.`complain` (`User_id` ASC) VISIBLE;
-
-CREATE INDEX `fk_Deparmetr_idx` ON `smartmsph`.`complain` (`Departmet_idR` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -172,24 +135,12 @@ CREATE TABLE IF NOT EXISTS `smartmsph`.`denounces` (
   `Date` DATETIME NULL DEFAULT NULL,
   `Answer` VARCHAR(10000) NULL DEFAULT NULL,
   PRIMARY KEY (`Denounces_id`),
-  CONSTRAINT `fk_denounces_department1`
-    FOREIGN KEY (`Department_id`)
-    REFERENCES `smartmsph`.`department` (`Department_Id`),
-  CONSTRAINT `fk_denounces_person`
-    FOREIGN KEY (`Person_id`)
-    REFERENCES `smartmsph`.`person` (`Person_Id`),
-  CONSTRAINT `fk_User_Denounces`
-    FOREIGN KEY (`User_id`)
-    REFERENCES `smartmsph`.`user` (`User_Id`))
+  INDEX `fk_denounces_citizen1_idx` (`Person_id` ASC) VISIBLE,
+  INDEX `fk_User_denounces_idx` (`User_id` ASC) VISIBLE,
+  INDEX `fk_Department_denounces_idx` (`Department_id` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 45
+AUTO_INCREMENT = 47
 DEFAULT CHARACTER SET = utf8;
-
-CREATE INDEX `fk_denounces_citizen1_idx` ON `smartmsph`.`denounces` (`Person_id` ASC) VISIBLE;
-
-CREATE INDEX `fk_User_denounces_idx` ON `smartmsph`.`denounces` (`User_id` ASC) VISIBLE;
-
-CREATE INDEX `fk_Department_denounces_idx` ON `smartmsph`.`denounces` (`Department_id` ASC) VISIBLE;
 
 
 -- -----------------------------------------------------
@@ -221,13 +172,9 @@ CREATE TABLE IF NOT EXISTS `smartmsph`.`ticket` (
   `Department_id` SMALLINT NULL DEFAULT NULL,
   `Ticketcol` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`Ticket_id`),
-  CONSTRAINT `fk_ticket_department1`
-    FOREIGN KEY (`Department_id`)
-    REFERENCES `smartmsph`.`department` (`Department_Id`))
+  INDEX `fk_ticket_department1_idx` (`Department_id` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
-CREATE INDEX `fk_ticket_department1_idx` ON `smartmsph`.`ticket` (`Department_id` ASC) VISIBLE;
 
 USE `smartmsph` ;
 
@@ -495,13 +442,27 @@ DROP procedure IF EXISTS `smartmsph`.`Denounces_list`;
 
 DELIMITER $$
 USE `smartmsph`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Denounces_list`(in PUser_id smallint)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Denounces_list`(in PUser_id smallint,pFrom varchar(100), pTo varchar(100),pState varchar(100),pDepartment varchar(100))
 BEGIN
-SELECT a.Denounces_id,a.Description,a.Department_id ,a.State,a.Photo,a.Latitud,a.Longitud,b.DepartmentName FROM denounces a 
+if pFrom  = '' or pTo = '' then begin 
+
+SELECT a.Denounces_id,a.Description,a.Department_id ,a.State,a.Photo,a.Latitud,a.Longitud,b.DepartmentName,a.Answer FROM denounces a 
 JOIN department b ON a.Department_Id = b.Department_Id
-where User_id=PUser_id 
-ORDER BY a.Date desc
-;
+where User_id=PUser_id and  a.State like concat('%',pState,'%')
+and b.DepartmentName like concat('%',pDepartment,'%')
+ORDER BY a.Date desc;
+ 
+ end; else begin 
+ 
+ SELECT a.Denounces_id,a.Description,a.Department_id ,a.State,a.Photo,a.Latitud,a.Longitud,b.DepartmentName,a.Answer FROM denounces a 
+JOIN department b ON a.Department_Id = b.Department_Id
+where a.Date >= pFrom and a.Date<=pTo and
+ User_id=PUser_id and  a.State like concat('%',pState,'%')
+and b.DepartmentName like concat('%',pDepartment,'%')
+ORDER BY a.Date desc;
+  
+ end;
+ end if;
 END$$
 
 DELIMITER ;
@@ -601,14 +562,14 @@ DELIMITER $$
 USE `smartmsph`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `NewInsert`(Pnew_Id smallint ,Pdescripcion varchar(10000), Pphoto MEDIUMTEXT, Ptitulo varchar(10000),Pexpired  varchar(20),pActive bit)
 BEGIN
-	IF Pnew_Id = 0 then
+  IF Pnew_Id = 0 then
     begin 
     select Pexpired;
     insert into  news(descri,photo,titulo,Date,Active) values(Pdescripcion,Pphoto,Ptitulo,Pexpired,pActive);
 
     end ;
     else  begin 
-		UPDATE news SET descri = Pdescripcion, photo = 		Pphoto, titulo = Ptitulo , Date = Pexpired, Active = pActive
+    UPDATE news SET descri = Pdescripcion, photo =    Pphoto, titulo = Ptitulo , Date = Pexpired, Active = pActive
         where News_Id = Pnew_Id;
     end;
 end if;
@@ -736,7 +697,7 @@ State,
  ,'');
 
 end;
-	else begin 
+  else begin 
     update  denounces set Description=PDescription, Department_id=PDepartment_id, Photo=PPhoto, Latitud=PLatitud, Longitud=PLongitud,Date=CURDATE()  where Denounces_Id = pDenouce_id;
     
     end; 
@@ -770,7 +731,7 @@ INSERT into department select  ifnull(max(Department_id),0) + 1
 from department;
 
 end;
-	else begin 
+  else begin 
     update  department set DepartmentName=pDepartmentName,
  Person_Id =  pPerson_Id  
     where Department_Id = pDepartmet_Id;
@@ -871,11 +832,11 @@ INTO currentpassword
 from user where User_id = Puser_id;
 
 if  PCurrentPassword = currentpassword then begin 
-	update user set Password = Pnewpassword where 
+  update user set Password = Pnewpassword where 
     User_Id = Puser_id;
 end; else
  SIGNAL SQLSTATE '45000'
-			SET MESSAGE_TEXT = 'La contraseña actual no coincide';
+      SET MESSAGE_TEXT = 'La contraseña actual no coincide';
  begin
  end; 
 end if;
@@ -1049,12 +1010,12 @@ FROM user;
  update Person set Name =  Pnombre 
                    ,LastName1 = Papellido1
                    ,LastName2 = Papellido2
-                   ,Email	  =	Pcorreo
-				   ,phoneNumber	= Ptelefono
+                   ,Email   = Pcorreo
+           ,phoneNumber = Ptelefono
                    where Person_Id = Ppersona_id;
                    
-				update user set UserName  = PnombreUsuario
-								,Password = Ppassword
+        update user set UserName  = PnombreUsuario
+                ,Password = Ppassword
                                 ,Role_Id  = Prole
                                 ,department_id = PDepartment
                                 where Person_id = Ppersona_id

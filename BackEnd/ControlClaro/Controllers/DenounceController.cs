@@ -123,8 +123,8 @@ namespace ControlClaro.Controllers
 
 
         [HttpGet]
-        [Route("api/Denuncias/List/{Id_User}")]
-        public HttpResponseMessage ListDenouncesbyId(int Id_User)
+        [Route("api/Denuncias/List/{Id_User}/{desde}/{hasta}/{state}/{deparment}")]
+        public HttpResponseMessage ListDenouncesbyId(int Id_User,string desde,string hasta,string state,string deparment)
         {
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
             ResponseConfig config = VerifyAuthorization(Request.Headers);
@@ -133,13 +133,14 @@ namespace ControlClaro.Controllers
             try
             {
                 VerifyMessage(config.errorMessage);
-
-
-
+                if (desde == "_ALL_") desde = "";
+                if (hasta == "_ALL_") hasta = "";
+                if (state == "-1") state = "";
+                if (deparment == "-1") deparment = "";
                 using (DenounceService service = new DenounceService())
                 {
                     
-                    data.result = service.ListDenouncesbyId(Id_User.ToString());
+                    data.result = service.ListDenouncesbyId(Id_User.ToString(), desde,hasta,state,deparment);
                     data.status = true;
                 }
             }

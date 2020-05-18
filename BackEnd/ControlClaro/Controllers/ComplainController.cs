@@ -162,7 +162,7 @@ namespace ControlClaro.Controllers
                     service.GuardarQueja(queja.Description,queja.state, queja.person_Id, queja.User_id, queja.employee_name, queja.employee, queja.department_id,queja.fecha);
                     data.result = null;
                     data.status = true;
-                    data.message = "Se creo la queja";
+                    data.message = "Su queja ha sido enviada correctamente";
                 }
             }
             catch (Exception ex)
@@ -170,7 +170,7 @@ namespace ControlClaro.Controllers
                 response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
                 data.status = false;
                 data.message = ex.Message;
-                data.error = NewError(ex, "hubo un error");
+                data.error = NewError(ex, "Error en la creación de la queja");
             }
             finally
             {
@@ -234,7 +234,7 @@ namespace ControlClaro.Controllers
                     service.UpdateComplain(complain.Complain_Id, complain.Description,complain.employee,complain.employee_name,complain.department_id,complain.fecha);
                     data.result = null;
                     data.status = true;
-                    data.message = "Se actualizo la queja";
+                    data.message = "Su queja se actualió correctament";
                 }
             }
             catch (Exception ex)
@@ -242,7 +242,7 @@ namespace ControlClaro.Controllers
                 response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
                 data.status = false;
                 data.message = ex.Message;
-                data.error = NewError(ex, "hubo un error");
+                data.error = NewError(ex, "Error actualizando la queja");
             }
             finally
             {
@@ -343,7 +343,7 @@ namespace ControlClaro.Controllers
 
 
         [HttpPost]
-        [Route("api/complain/UpdateComplainbyAdmin/{complain}")]
+        [Route("api/complain/UpdateComplainbyAdmin/")]
         public HttpResponseMessage UpdateComplainbyAdmin(Complain complain)
         {
             HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
