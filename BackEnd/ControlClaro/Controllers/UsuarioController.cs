@@ -119,6 +119,45 @@ namespace ControlClaro.Controllers
             return response;
         }
 
+        [HttpPost]
+        [Route("api/usuario/changepasswordlogout/{username}/{currentpassword}")]
+        public HttpResponseMessage ChangePasswordlogout(string currentpassword, string username)
+        {
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            ResponseConfig config = VerifyAuthorization(Request.Headers);
+            RestResponse data = new RestResponse();
+
+            try
+            {
+                
+
+                using (UsuarioService service = new UsuarioService())
+                {
+                    service.ChangePasswordlogout(username, currentpassword);
+                    data.result = null;
+                    data.status = true;
+                    data.message = "El cambio de contraseña se completó correctamente";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = config.isAuthenticated ? HttpStatusCode.BadRequest : HttpStatusCode.Unauthorized;
+                data.status = false;
+                data.message = ex.Message;
+                data.error = NewError(ex, "Cambio de contraseña");
+            }
+            finally
+            {
+                response.Content = CreateContent(data);
+            }
+
+            return response;
+        }
+
+
+
+
+
 
         [HttpPost]
         [Route("api/user/savephoto/")]
