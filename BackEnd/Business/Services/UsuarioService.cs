@@ -258,6 +258,32 @@ namespace Business.Services
         }
 
 
+        public void ChangePasswordlogout(string usuario_Id, string currentpassword)
+        {
+            string query;
+
+            try
+            {
+                connection.Open();
+                connection.BeginTransaction();
+
+                query = "CALL User_ChangePasswordlogout ('" + usuario_Id + "','" +
+                         currentpassword + "')";
+
+                connection.Execute(query);
+                connection.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                connection.RollBackTransaction();
+                throw ex;
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
 
         public List<Role> ListRole()
         {
